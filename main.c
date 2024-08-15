@@ -5,7 +5,6 @@
 int main()
 {
     stdio_init_all();
-    st7735_init();
 
 
     while (true) {
