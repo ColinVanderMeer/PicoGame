@@ -16,8 +16,8 @@ int main()
     hagl_backend_t *display = hagl_init();
 
 
-    int16_t x0 = 10;
-    int16_t y0 = 10;
+    float x0 = 10;
+    float y0 = 10;
     uint16_t w = 19;
     uint16_t h = 28;
     hagl_color_t color = 0xffff;
@@ -42,19 +42,19 @@ int main()
     while (1) {
         hagl_clear(display);
         if (!gpio_get(5)) {
-            y0 -= 1;
+            y0 -= 0.5;
         }
         if (!gpio_get(6)) {
-            x0 -= 1;
+            x0 -= 0.5;
         }
         if (!gpio_get(7)) {
-            y0 += 1;
+            y0 += 0.5;
         }
         if (!gpio_get(8)) {
-            x0 += 1;
+            x0 += 0.5;
         }
 
-        hagl_fill_rectangle_xywh(display, x0, y0, w, h, color);
+        hagl_fill_rectangle_xywh(display, (int)x0, (int)y0, w, h, color);
         hagl_flush(display);
     };
 
