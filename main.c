@@ -18,9 +18,13 @@ int main()
 
     float x0 = 10;
     float y0 = 10;
-    uint16_t w = 19;
-    uint16_t h = 28;
+    uint16_t w = 20;
+    uint16_t h = 30;
     hagl_color_t color = 0xffff;
+
+    bool onGround = false;
+
+    float jumpVelocity = 0;
 
     gpio_init(5);
     gpio_set_dir(5, GPIO_IN);
@@ -42,7 +46,10 @@ int main()
     while (1) {
         hagl_clear(display);
         if (!gpio_get(5)) {
-            y0 -= 0.5;
+            if (onGround) {
+                jumpVelocity = -5;
+                onGround = false;
+            }
         }
         if (!gpio_get(6)) {
             x0 -= 0.5;
@@ -53,6 +60,18 @@ int main()
         if (!gpio_get(8)) {
             x0 += 0.5;
         }
+
+        y0 += 0.5;
+        y0 += jumpVelocity;
+        jumpVelocity += 0.25;
+        
+
+        if (y0 > display->height - h) {
+            y0 = display->height - h;
+            onGround = true;
+        }
+
+        if (jumpVelocity > 0) jumpVelocity = 0;
 
         hagl_fill_rectangle_xywh(display, (int)x0, (int)y0, w, h, color);
         hagl_flush(display);
