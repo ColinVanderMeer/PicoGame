@@ -22,9 +22,19 @@ int main()
     uint16_t h = 100;
     hagl_color_t color = 0xffff;
 
+    gpio_init(6);
+    gpio_set_dir(6, GPIO_IN);
+    gpio_pull_up(6);
+
     /* Main loop. */
     while (1) {
         hagl_clear(display);
+        if (gpio_get(6)) {
+            color = 0xffff;
+        } else {
+            color = 0x0000;
+        }
+
         hagl_fill_rectangle_xywh(display, x0, y0, w, h, color);
         hagl_flush(display);
     };
