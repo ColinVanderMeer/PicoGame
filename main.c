@@ -15,16 +15,17 @@ int main()
 
     hagl_backend_t *display = hagl_init();
 
+
+    int16_t x0 = 10;
+    int16_t y0 = 10;
+    uint16_t w = 100;
+    uint16_t h = 100;
+    hagl_color_t color = 0xffff;
+
     /* Main loop. */
     while (1) {
         hagl_clear(display);
-        for (uint16_t i = 1; i < 50; i++) {
-            int16_t x0 = rand() % display->width;
-            int16_t y0 = rand() % display->height;
-            hagl_color_t color = rand() % 0xffff;
-
-            hagl_put_text(display, u"Hello", x0, y0, color, font6x9);
-        }
+        hagl_fill_rectangle_xywh(display, x0, y0, w, h, color);
         hagl_flush(display);
     };
 
