@@ -110,6 +110,7 @@ void gameLoop(hagl_backend_t *display) {
 
         hagl_fill_rectangle_xywh(display, (int)player.x, (int)player.y, w, h, color);
         if (textBoxActive) {
+            hagl_fill_rounded_rectangle_xyxy(display, 2, 84, 157, 127, 5, 0x0000);
             hagl_draw_rounded_rectangle_xyxy(display, 2, 84, 157, 127, 5, color);
             hagl_put_text(display, textLine1, 5, 87, color, font6x9);
             hagl_put_text(display, textLine2, 5, 97, color, font6x9);
