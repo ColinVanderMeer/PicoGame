@@ -20,6 +20,11 @@ bool textBoxActive = false;
 
 bool gp12justPressed = false;
 
+wchar_t textLine1[26] = L"";
+wchar_t textLine2[26] = L"";
+wchar_t textLine3[26] = L"";
+wchar_t textLine4[26] = L"";
+
 void initInput() {
     gpio_init(5);
     gpio_set_dir(5, GPIO_IN);
@@ -56,33 +61,40 @@ void initInput() {
 
 void handleInput() {
     if (!textBoxActive) {
-        if (!gpio_get(5)) {
+        if (!gpio_get(5)) { // W
             player.y -= 1;
         }
-        if (!gpio_get(6)) {
+        if (!gpio_get(6)) { // A
             player.x -= 1;
         }
-        if (!gpio_get(7)) {
+        if (!gpio_get(7)) { // S
             player.y += 1;
         }
-        if (!gpio_get(8)) {
+        if (!gpio_get(8)) { // D
             player.x += 1;
         }
     }
-    if (!gpio_get(12) && !gp12justPressed) {
+    if (!gpio_get(12) && !gp12justPressed) { // I
         textBoxActive = !textBoxActive;
         gp12justPressed = true;
+        wcscpy(textLine1, L"Hello");
+        wcscpy(textLine2, L"World");
+        wcscpy(textLine3, L"!");
+        wcscpy(textLine4, L"abcdefghijklmnopqrstuvwxy");
     }
     if (gpio_get(12)) {
         gp12justPressed = false;
     }
-    if (!gpio_get(13)) {
+    if (!gpio_get(13)) { // J
+        wcscpy(textLine1, L"This");
+        wcscpy(textLine2, L"Is");
+        wcscpy(textLine3, L"TextBox");
+        wcscpy(textLine4, L"2");
+    }
+    if (!gpio_get(14)) { // K
         
     }
-    if (!gpio_get(14)) {
-        
-    }
-    if (!gpio_get(15)) {
+    if (!gpio_get(15)) { // L
         
     }
 }
@@ -98,7 +110,11 @@ void gameLoop(hagl_backend_t *display) {
 
         hagl_fill_rectangle_xywh(display, (int)player.x, (int)player.y, w, h, color);
         if (textBoxActive) {
-            hagl_put_text(display, L"This is a text test :)", 5, 100, color, font6x9);
+            hagl_draw_rounded_rectangle_xyxy(display, 2, 84, 157, 127, 5, color);
+            hagl_put_text(display, textLine1, 5, 87, color, font6x9);
+            hagl_put_text(display, textLine2, 5, 97, color, font6x9);
+            hagl_put_text(display, textLine3, 5, 107, color, font6x9);
+            hagl_put_text(display, textLine4, 5, 117, color, font6x9);
         }
         hagl_flush(display);
     }
