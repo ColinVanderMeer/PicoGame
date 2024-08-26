@@ -159,6 +159,20 @@ void gameLoop(hagl_backend_t *display) {
     }
 }
 
+int titleScreen(hagl_backend_t *display) {
+    hagl_clear(display);
+    hagl_put_text(display, L"PicoGame RPG (wip)", 26, 30, 0xffff, font6x9);
+    hagl_put_text(display, L"Press L to start w/ music", 5, 50, 0xffff, font6x9);
+    hagl_put_text(display, L"Press K to start no music", 5, 60, 0xffff, font6x9);
+    hagl_flush(display);
+
+    while (1) {
+        if (!gpio_get(14)) return 0;
+        if (!gpio_get(15)) return 1;
+    }
+
+}
+
 int main()
 {
     stdio_init_all();
@@ -168,8 +182,13 @@ int main()
     initInput();
 
     sound_i2s_init(&sound_config);
-    mod_play_start(&mod_hymn_to_aurora, 22050, 1);
-    sound_i2s_playback_start();
+
+    int soundActive = titleScreen(display);
+
+    if (soundActive) {
+        mod_play_start(&mod_hymn_to_aurora, 22050, 1);
+        sound_i2s_playback_start();
+    }
 
     gameLoop(display);
 
