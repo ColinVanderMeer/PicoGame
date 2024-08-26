@@ -16,6 +16,10 @@ struct player {
 
 struct player player = {0, 0, 0};
 
+bool textBoxActive = false;
+
+bool gp12justPressed = false;
+
 void initInput() {
     gpio_init(5);
     gpio_set_dir(5, GPIO_IN);
@@ -51,20 +55,26 @@ void initInput() {
 }
 
 void handleInput() {
-    if (!gpio_get(5)) {
-        player.y -= 1;
+    if (!textBoxActive) {
+        if (!gpio_get(5)) {
+            player.y -= 1;
+        }
+        if (!gpio_get(6)) {
+            player.x -= 1;
+        }
+        if (!gpio_get(7)) {
+            player.y += 1;
+        }
+        if (!gpio_get(8)) {
+            player.x += 1;
+        }
     }
-    if (!gpio_get(6)) {
-        player.x -= 1;
+    if (!gpio_get(12) && !gp12justPressed) {
+        textBoxActive = !textBoxActive;
+        gp12justPressed = true;
     }
-    if (!gpio_get(7)) {
-        player.y += 1;
-    }
-    if (!gpio_get(8)) {
-        player.x += 1;
-    }
-    if (!gpio_get(12)) {
-        
+    if (gpio_get(12)) {
+        gp12justPressed = false;
     }
     if (!gpio_get(13)) {
         
@@ -87,8 +97,9 @@ void gameLoop(hagl_backend_t *display) {
         hagl_color_t color = 0xffff;
 
         hagl_fill_rectangle_xywh(display, (int)player.x, (int)player.y, w, h, color);
-
-        hagl_put_text(display, L"This is a text test :)", 0, 100, color, font6x9);
+        if (textBoxActive) {
+            hagl_put_text(display, L"This is a text test :)", 5, 100, color, font6x9);
+        }
         hagl_flush(display);
     }
 }
