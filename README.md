@@ -1,5 +1,5 @@
 # PicoGame
-This is a WIP game/engine that runs on the Hack Club Sprig a RP2040 based game console
+This is a WIP RPG game that runs on the Hack Club Sprig, a RP2040 based game console
 
 ## How to run
 - Download a .uf2 binary from releases or compile a version yourself
