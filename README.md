@@ -7,3 +7,5 @@ This is a WIP RPG game that runs on the Hack Club Sprig, a RP2040 based game con
 - Drag and drop the .uf2 file onto the RPI-RP2 drive
 
 #### Claude Sonnet 3.5 was used for general ideas of how to implement game mechanics
+
+![Demo](static/PicoGame.gif)
