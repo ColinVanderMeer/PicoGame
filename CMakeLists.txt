@@ -60,10 +60,12 @@ target_link_libraries(PicoGame
         hardware_spi
         hagl
         hagl_hal
+        mod_player
         )
 
 add_subdirectory(external/hagl)
 add_subdirectory(external/hagl_hal)
+add_subdirectory(external/mod_player)
 
 pico_add_extra_outputs(PicoGame)
 

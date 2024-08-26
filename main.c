@@ -9,6 +9,11 @@
 
 #include <wchar.h>
 
+#include <mod_play.h>
+#include <sound_i2s.h>
+
+#include "hymn_to_aurora.h"
+
 struct player {
     float x, y;
     int direction;
@@ -24,6 +29,15 @@ wchar_t textLine1[26] = L"";
 wchar_t textLine2[26] = L"";
 wchar_t textLine3[26] = L"";
 wchar_t textLine4[26] = L"";
+
+static const struct sound_i2s_config sound_config = {
+  .pin_scl         = 10,
+  .pin_sda         = 9,
+  .pin_ws          = 11,
+  .sample_rate     = 22050,
+  .bits_per_sample = 16,
+  .pio_num         = 0,
+};
 
 void initInput() {
     gpio_init(5);
@@ -99,6 +113,29 @@ void handleInput() {
     }
 }
 
+static void update_mod_player(void)
+{
+  static int8_t *last_buffer;
+  static unsigned char tmp_buffer[SOUND_I2S_BUFFER_NUM_SAMPLES];
+
+  int8_t *buffer = sound_i2s_get_next_buffer();
+  if (buffer != last_buffer) {
+    last_buffer = buffer;
+
+    // send MOD player output to tmp_buffer:
+    mod_play_step(tmp_buffer, SOUND_I2S_BUFFER_NUM_SAMPLES);
+
+    // copy tmp_buffer to I2S output buffer:
+    for (int i = 0; i < SOUND_I2S_BUFFER_NUM_SAMPLES; i++) {
+      int8_t sample = tmp_buffer[i] - 128;  // make it a signed 8-bit sample
+      *buffer++ = sample;
+      *buffer++ = sample;
+      *buffer++ = sample;
+      *buffer++ = sample;
+    }
+  }
+}
+
 void gameLoop(hagl_backend_t *display) {
     while (1) {
         hagl_clear(display);
@@ -117,6 +154,7 @@ void gameLoop(hagl_backend_t *display) {
             hagl_put_text(display, textLine3, 5, 107, color, font6x9);
             hagl_put_text(display, textLine4, 5, 117, color, font6x9);
         }
+        update_mod_player();
         hagl_flush(display);
     }
 }
@@ -128,6 +166,10 @@ int main()
     hagl_backend_t *display = hagl_init();
 
     initInput();
+
+    sound_i2s_init(&sound_config);
+    mod_play_start(&mod_hymn_to_aurora, 22050, 1);
+    sound_i2s_playback_start();
 
     gameLoop(display);
 
