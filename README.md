@@ -8,4 +8,9 @@ This is a WIP RPG game that runs on the Hack Club Sprig, a RP2040 based game con
 
 #### Claude Sonnet 3.5 was used for general ideas of how to implement game mechanics
 
+## Third party
+[hagl](https://github.com/tuupola/hagl)
+[pico-mod-player](https://github.com/moefh/pico-mod-player)
+Music: [hymn to aurora](https://modarchive.org/index.php?request=view_by_moduleid&query=99684)
+
 ![Demo](static/PicoGame.gif)
