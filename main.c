@@ -7,6 +7,8 @@
 
 #include <font6x9.h>
 
+#include <wchar.h>
+
 struct player {
     float x, y;
     int direction;
@@ -85,6 +87,8 @@ void gameLoop(hagl_backend_t *display) {
         hagl_color_t color = 0xffff;
 
         hagl_fill_rectangle_xywh(display, (int)player.x, (int)player.y, w, h, color);
+
+        hagl_put_text(display, L"This is a text test :)", 0, 100, color, font6x9);
         hagl_flush(display);
     }
 }
