@@ -7,8 +7,12 @@
 
 #include <font6x9.h>
 
-float playerX = 10;
-float playerY = 10;
+struct player {
+    float x, y;
+    int direction;
+};
+
+struct player player = {0, 0, 0};
 
 void initInput() {
     gpio_init(5);
@@ -46,16 +50,16 @@ void initInput() {
 
 void handleInput() {
     if (!gpio_get(5)) {
-        playerY -= 1;
+        player.y -= 1;
     }
     if (!gpio_get(6)) {
-        playerX -= 1;
+        player.x -= 1;
     }
     if (!gpio_get(7)) {
-        playerY += 1;
+        player.y += 1;
     }
     if (!gpio_get(8)) {
-        playerX += 1;
+        player.x += 1;
     }
     if (!gpio_get(12)) {
         
@@ -80,7 +84,7 @@ void gameLoop(hagl_backend_t *display) {
         uint16_t h = 30;
         hagl_color_t color = 0xffff;
 
-        hagl_fill_rectangle_xywh(display, (int)playerX, (int)playerY, w, h, color);
+        hagl_fill_rectangle_xywh(display, (int)player.x, (int)player.y, w, h, color);
         hagl_flush(display);
     }
 }
