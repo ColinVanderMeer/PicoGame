@@ -7,25 +7,10 @@
 
 #include <font6x9.h>
 
+float playerX = 10;
+float playerY = 10;
 
-
-int main()
-{
-    stdio_init_all();
-
-    hagl_backend_t *display = hagl_init();
-
-
-    float x0 = 10;
-    float y0 = 10;
-    uint16_t w = 20;
-    uint16_t h = 30;
-    hagl_color_t color = 0xffff;
-
-    bool onGround = false;
-
-    float jumpVelocity = 0;
-
+void initInput() {
     gpio_init(5);
     gpio_set_dir(5, GPIO_IN);
     gpio_pull_up(5);
@@ -42,45 +27,74 @@ int main()
     gpio_set_dir(8, GPIO_IN);
     gpio_pull_up(8);
 
-    /* Main loop. */
+    gpio_init(12);
+    gpio_set_dir(12, GPIO_IN);
+    gpio_pull_up(12);
+
+    gpio_init(13);
+    gpio_set_dir(13, GPIO_IN);
+    gpio_pull_up(13);
+
+    gpio_init(14);
+    gpio_set_dir(14, GPIO_IN);
+    gpio_pull_up(14);
+
+    gpio_init(15);
+    gpio_set_dir(15, GPIO_IN);
+    gpio_pull_up(15);
+}
+
+void handleInput() {
+    if (!gpio_get(5)) {
+        playerY -= 1;
+    }
+    if (!gpio_get(6)) {
+        playerX -= 1;
+    }
+    if (!gpio_get(7)) {
+        playerY += 1;
+    }
+    if (!gpio_get(8)) {
+        playerX += 1;
+    }
+    if (!gpio_get(12)) {
+        
+    }
+    if (!gpio_get(13)) {
+        
+    }
+    if (!gpio_get(14)) {
+        
+    }
+    if (!gpio_get(15)) {
+        
+    }
+}
+
+void gameLoop(hagl_backend_t *display) {
     while (1) {
         hagl_clear(display);
-        if (!gpio_get(5)) {
-            if (onGround) {
-                jumpVelocity = -5;
-                onGround = false;
-            }
-        }
-        if (!gpio_get(6)) {
-            x0 -= 0.66;
-        }
-        if (!gpio_get(7)) {
-            y0 += 0.66;
-        }
-        if (!gpio_get(8)) {
-            x0 += 0.66;
-        }
+        handleInput();
 
-        y0 += 0.5;
-        y0 += jumpVelocity;
-        jumpVelocity += 0.25;
-        
+        uint16_t w = 20;
+        uint16_t h = 30;
+        hagl_color_t color = 0xffff;
 
-        if (y0 > display->height - h) {
-            y0 = display->height - h;
-            onGround = true;
-        }
-
-        if (jumpVelocity > 0) jumpVelocity = 0;
-
-        hagl_fill_rectangle_xywh(display, (int)x0, (int)y0, w, h, color);
+        hagl_fill_rectangle_xywh(display, (int)playerX, (int)playerY, w, h, color);
         hagl_flush(display);
-    };
-
-hagl_close(display);
-
-    while (true) {
-        printf("Hello, world!\n");
-        sleep_ms(1000);
     }
+}
+
+int main()
+{
+    stdio_init_all();
+
+    hagl_backend_t *display = hagl_init();
+
+    initInput();
+
+    gameLoop(display);
+
+    hagl_close(display);
+
 }
