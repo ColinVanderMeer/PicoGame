@@ -1,4 +1,4 @@
-# PicoGame
+# PicoRPG
 This is a WIP RPG game that runs on the Hack Club Sprig, a RP2040 based game console. [Demo Video](/static/PicoRPGdemo.mp4)
 
 ## How to run
