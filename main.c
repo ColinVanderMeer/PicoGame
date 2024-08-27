@@ -22,7 +22,7 @@ struct player {
     int steps;
 };
 
-struct player player = {0, 0, 3, 0};
+struct player player = {0, 0, 2, 0};
 
 bool textBoxActive = false;
 
@@ -80,7 +80,7 @@ void handleInput() {
     if (!textBoxActive) {
         if (!gpio_get(5)) { // W
             player.y -= 0.7;
-            // player.direction = 0;
+            player.direction = 0;
         }
         if (!gpio_get(6)) { // A
             player.x -= 0.7;
@@ -88,7 +88,7 @@ void handleInput() {
         }
         if (!gpio_get(7)) { // S
             player.y += 0.7;
-            // player.direction = 2;
+            player.direction = 2;
         }
         if (!gpio_get(8)) { // D
             player.x += 0.7;
@@ -156,7 +156,21 @@ void gameLoop(hagl_backend_t *display) {
         uint16_t w = 20;
         uint16_t h = 30;
         hagl_color_t color = 0xffff;
-        if (player.direction == 1) {
+        if (player.direction == 0) {
+            if (player.steps > 60) {
+                hagl_blit(display, (int)player.x, (int)player.y, &playerWalkW3);
+                if (player.steps > 80) {
+                    player.steps = 0;
+                }
+            } else if (player.steps > 20 && player.steps < 40) {
+                hagl_blit(display, (int)player.x, (int)player.y, &playerWalkW2);
+                if (player.steps > 40) {
+                    player.steps = 0;
+                }
+            } else {
+                hagl_blit(display, (int)player.x, (int)player.y, &playerWalkW1);
+            }
+        } else if (player.direction == 1) {
             if (player.steps > 20) {
                 hagl_blit(display, (int)player.x, (int)player.y, &playerWalkA2);
                 if (player.steps > 40) {
@@ -164,6 +178,20 @@ void gameLoop(hagl_backend_t *display) {
                 }
             } else {
                 hagl_blit(display, (int)player.x, (int)player.y, &playerWalkA1);
+            }
+        } else if (player.direction == 2) {
+            if (player.steps > 60) {
+                hagl_blit(display, (int)player.x, (int)player.y, &playerWalkS3);
+                if (player.steps > 80) {
+                    player.steps = 0;
+                }
+            } else if (player.steps > 20 && player.steps < 40) {
+                hagl_blit(display, (int)player.x, (int)player.y, &playerWalkS2);
+                if (player.steps > 40) {
+                    player.steps = 0;
+                }
+            } else {
+                hagl_blit(display, (int)player.x, (int)player.y, &playerWalkS1);
             }
         } else if (player.direction == 3) {
             if (player.steps > 20) {
