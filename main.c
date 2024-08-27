@@ -19,9 +19,10 @@
 struct player {
     float x, y;
     int direction;
+    int steps;
 };
 
-struct player player = {0, 0, 0};
+struct player player = {0, 0, 3, 0};
 
 bool textBoxActive = false;
 
@@ -78,17 +79,26 @@ void initInput() {
 void handleInput() {
     if (!textBoxActive) {
         if (!gpio_get(5)) { // W
-            player.y -= 1;
+            player.y -= 0.7;
+            // player.direction = 0;
         }
         if (!gpio_get(6)) { // A
-            player.x -= 1;
+            player.x -= 0.7;
+            player.direction = 1;
         }
         if (!gpio_get(7)) { // S
-            player.y += 1;
+            player.y += 0.7;
+            // player.direction = 2;
         }
         if (!gpio_get(8)) { // D
-            player.x += 1;
+            player.x += 0.7;
+            player.direction = 3;
         }
+    }
+    if (gpio_get(5) && gpio_get(6) && gpio_get(7) && gpio_get(8)) {
+        player.steps = 0;
+    } else {
+        player.steps++;
     }
     if (!gpio_get(12) && !gp12justPressed) { // I
         textBoxActive = !textBoxActive;
@@ -146,16 +156,35 @@ void gameLoop(hagl_backend_t *display) {
         uint16_t w = 20;
         uint16_t h = 30;
         hagl_color_t color = 0xffff;
-
-        hagl_fill_rectangle_xywh(display, (int)player.x, (int)player.y, w, h, color);
-        if (textBoxActive) {
-            hagl_fill_rounded_rectangle_xyxy(display, 2, 84, 157, 127, 5, 0x0000);
-            hagl_draw_rounded_rectangle_xyxy(display, 2, 84, 157, 127, 5, color);
-            hagl_put_text(display, textLine1, 5, 87, color, font6x9);
-            hagl_put_text(display, textLine2, 5, 97, color, font6x9);
-            hagl_put_text(display, textLine3, 5, 107, color, font6x9);
-            hagl_put_text(display, textLine4, 5, 117, color, font6x9);
+        if (player.direction == 1) {
+            if (player.steps > 20) {
+                hagl_blit(display, (int)player.x, (int)player.y, &playerWalkA2);
+                if (player.steps > 40) {
+                    player.steps = 0;
+                }
+            } else {
+                hagl_blit(display, (int)player.x, (int)player.y, &playerWalkA1);
+            }
+        } else if (player.direction == 3) {
+            if (player.steps > 20) {
+                hagl_blit(display, (int)player.x, (int)player.y, &playerWalkD2);
+                if (player.steps > 40) {
+                    player.steps = 0;
+                }
+            } else {
+                hagl_blit(display, (int)player.x, (int)player.y, &playerWalkD1);
+            }
         }
+        if (textBoxActive) {
+            player.steps = 0;
+            hagl_fill_rounded_rectangle_xyxy(display, 2, 82, 157, 125, 5, 0x0000);
+            hagl_draw_rounded_rectangle_xyxy(display, 2, 82, 157, 125, 5, color);
+            hagl_put_text(display, textLine1, 5, 85, color, font6x9);
+            hagl_put_text(display, textLine2, 5, 95, color, font6x9);
+            hagl_put_text(display, textLine3, 5, 105, color, font6x9);
+            hagl_put_text(display, textLine4, 5, 115, color, font6x9);
+        }
+        hagl_put_text(display, L"Press I for texbox test", 5, 5, color, font6x9);
         update_mod_player();
         hagl_flush(display);
     }
