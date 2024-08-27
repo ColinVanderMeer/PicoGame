@@ -1,5 +1,5 @@
 # PicoGame
-This is a WIP RPG game that runs on the Hack Club Sprig, a RP2040 based game console
+This is a WIP RPG game that runs on the Hack Club Sprig, a RP2040 based game console. [Demo Video](/static/PicoRPGdemo.mp4)
 
 ## How to run
 - Download a .uf2 binary from [releases](https://github.com/ColinVanderMeer/PicoGame/releases/latest) or compile a version yourself
@@ -12,5 +12,6 @@ This is a WIP RPG game that runs on the Hack Club Sprig, a RP2040 based game con
 - [hagl](https://github.com/tuupola/hagl)
 - [pico-mod-player](https://github.com/moefh/pico-mod-player)
 - Music: [hymn to aurora](https://modarchive.org/index.php?request=view_by_moduleid&query=99684)
+- Player Sprites: [Toby Fox](https://undertale.com/)
 
-![Demo](static/PicoGame.gif)
+![Demo](static/PicoRPG.JPG)
