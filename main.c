@@ -14,9 +14,7 @@
 
 #include "hymn_to_aurora.h"
 
-#include "test5.h"
-
-#include "head.h"
+#include "graphics.h"
 
 struct player {
     float x, y;
@@ -170,13 +168,13 @@ int titleScreen(hagl_backend_t *display) {
     hagl_put_text(display, L"Press K to start no music", 5, 60, 0xffff, font6x9);
 
     hagl_bitmap_t test_rgb_bitmap = {
-        .width = 20,
-        .height = 30,
+        .width = 134,
+        .height = 15,
         .depth = 8,
-        .buffer = test5_bin,
+        .buffer = logoText,
     };
 
-    hagl_blit(display, 0, 0, &test_rgb_bitmap);
+    hagl_blit(display, 13, 25, &test_rgb_bitmap);
     hagl_flush(display);
     while (1) {
         if (!gpio_get(14)) return 0;
