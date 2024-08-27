@@ -196,14 +196,7 @@ int titleScreen(hagl_backend_t *display) {
     hagl_put_text(display, L"Press L to start w/ music", 5, 50, 0xffff, font6x9);
     hagl_put_text(display, L"Press K to start no music", 5, 60, 0xffff, font6x9);
 
-    hagl_bitmap_t test_rgb_bitmap = {
-        .width = 134,
-        .height = 15,
-        .depth = 8,
-        .buffer = logoText,
-    };
-
-    hagl_blit(display, 13, 25, &test_rgb_bitmap);
+    hagl_blit(display, 13, 25, &logoText);
     hagl_flush(display);
     while (1) {
         if (!gpio_get(14)) return 0;
