@@ -14,6 +14,10 @@
 
 #include "hymn_to_aurora.h"
 
+#include "test5.h"
+
+#include "head.h"
+
 struct player {
     float x, y;
     int direction;
@@ -164,8 +168,16 @@ int titleScreen(hagl_backend_t *display) {
     hagl_put_text(display, L"PicoGame RPG (wip)", 26, 30, 0xffff, font6x9);
     hagl_put_text(display, L"Press L to start w/ music", 5, 50, 0xffff, font6x9);
     hagl_put_text(display, L"Press K to start no music", 5, 60, 0xffff, font6x9);
-    hagl_flush(display);
 
+    hagl_bitmap_t test_rgb_bitmap = {
+        .width = 20,
+        .height = 30,
+        .depth = 8,
+        .buffer = test5_bin,
+    };
+
+    hagl_blit(display, 0, 0, &test_rgb_bitmap);
+    hagl_flush(display);
     while (1) {
         if (!gpio_get(14)) return 0;
         if (!gpio_get(15)) return 1;
