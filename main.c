@@ -148,6 +148,18 @@ static void update_mod_player(void)
   }
 }
 
+void renderCharacter(hagl_backend_t *display, int px, int py, hagl_bitmap_t *bitmap) {
+    hagl_color_t transparentColor = hagl_color(display, 0, 255, 0);
+    for (uint8_t x = 0; x < 20; x++) {
+        for (uint8_t y = 0; y < 30; y++) {
+            hagl_color_t *color = (hagl_color_t *) (bitmap->buffer + (x + y * bitmap->width) * 2);
+            if (*color != transparentColor) {
+                hagl_put_pixel(display, px + x, py + y, *color);
+            }
+        }
+    }
+}
+
 void gameLoop(hagl_backend_t *display) {
     while (1) {
         hagl_clear(display);
@@ -156,6 +168,7 @@ void gameLoop(hagl_backend_t *display) {
         uint16_t w = 20;
         uint16_t h = 30;
         hagl_color_t color = 0xffff;
+        hagl_blit(display, 0, 0, &wallTile);
         if (player.direction == 0) {
             if (player.steps > 60) {
                 hagl_blit(display, (int)player.x, (int)player.y, &playerWalkW3);
@@ -195,12 +208,14 @@ void gameLoop(hagl_backend_t *display) {
             }
         } else if (player.direction == 3) {
             if (player.steps > 20) {
-                hagl_blit(display, (int)player.x, (int)player.y, &playerWalkD2);
+                // hagl_blit(display, (int)player.x, (int)player.y, &playerWalkD2);
+                renderCharacter(display, (int)player.x, (int)player.y, &playerWalkD2);
                 if (player.steps > 40) {
                     player.steps = 0;
                 }
             } else {
-                hagl_blit(display, (int)player.x, (int)player.y, &playerWalkD1);
+                // hagl_blit(display, (int)player.x, (int)player.y, &playerWalkD1);
+                renderCharacter(display, (int)player.x, (int)player.y, &playerWalkD1);
             }
         }
         if (textBoxActive) {
@@ -212,7 +227,6 @@ void gameLoop(hagl_backend_t *display) {
             hagl_put_text(display, textLine3, 5, 105, color, font6x9);
             hagl_put_text(display, textLine4, 5, 115, color, font6x9);
         }
-        hagl_put_text(display, L"Press I for texbox test", 5, 5, color, font6x9);
         update_mod_player();
         hagl_flush(display);
     }
