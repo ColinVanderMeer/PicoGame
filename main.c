@@ -160,6 +160,14 @@ void renderCharacter(hagl_backend_t *display, int px, int py, hagl_bitmap_t *bit
     }
 }
 
+void renderMap(hagl_backend_t *display) {
+    for (uint8_t x = 0; x < 10; x++) {
+        for (uint8_t y = 0; y < 8; y++) {
+            hagl_blit(display, x*16, y*16, &floorTile);
+        }
+    }
+}
+
 void gameLoop(hagl_backend_t *display) {
     while (1) {
         hagl_clear(display);
@@ -168,7 +176,7 @@ void gameLoop(hagl_backend_t *display) {
         uint16_t w = 20;
         uint16_t h = 30;
         hagl_color_t color = 0xffff;
-        hagl_blit(display, 0, 0, &wallTile);
+        renderMap(display);
         if (player.direction == 0) {
             if (player.steps > 60) {
                 renderCharacter(display, (int)player.x, (int)player.y, &playerWalkW3);
