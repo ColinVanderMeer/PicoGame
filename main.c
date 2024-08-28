@@ -171,50 +171,48 @@ void gameLoop(hagl_backend_t *display) {
         hagl_blit(display, 0, 0, &wallTile);
         if (player.direction == 0) {
             if (player.steps > 60) {
-                hagl_blit(display, (int)player.x, (int)player.y, &playerWalkW3);
+                renderCharacter(display, (int)player.x, (int)player.y, &playerWalkW3);
                 if (player.steps > 80) {
                     player.steps = 0;
                 }
             } else if (player.steps > 20 && player.steps < 40) {
-                hagl_blit(display, (int)player.x, (int)player.y, &playerWalkW2);
+                renderCharacter(display, (int)player.x, (int)player.y, &playerWalkW2);
                 if (player.steps > 40) {
                     player.steps = 0;
                 }
             } else {
-                hagl_blit(display, (int)player.x, (int)player.y, &playerWalkW1);
+                renderCharacter(display, (int)player.x, (int)player.y, &playerWalkW1);
             }
         } else if (player.direction == 1) {
             if (player.steps > 20) {
-                hagl_blit(display, (int)player.x, (int)player.y, &playerWalkA2);
+                renderCharacter(display, (int)player.x, (int)player.y, &playerWalkA2);
                 if (player.steps > 40) {
                     player.steps = 0;
                 }
             } else {
-                hagl_blit(display, (int)player.x, (int)player.y, &playerWalkA1);
+                renderCharacter(display, (int)player.x, (int)player.y, &playerWalkA1);
             }
         } else if (player.direction == 2) {
             if (player.steps > 60) {
-                hagl_blit(display, (int)player.x, (int)player.y, &playerWalkS3);
+                renderCharacter(display, (int)player.x, (int)player.y, &playerWalkS3);
                 if (player.steps > 80) {
                     player.steps = 0;
                 }
             } else if (player.steps > 20 && player.steps < 40) {
-                hagl_blit(display, (int)player.x, (int)player.y, &playerWalkS2);
+                renderCharacter(display, (int)player.x, (int)player.y, &playerWalkS2);
                 if (player.steps > 40) {
                     player.steps = 0;
                 }
             } else {
-                hagl_blit(display, (int)player.x, (int)player.y, &playerWalkS1);
+                renderCharacter(display, (int)player.x, (int)player.y, &playerWalkS1);
             }
         } else if (player.direction == 3) {
             if (player.steps > 20) {
-                // hagl_blit(display, (int)player.x, (int)player.y, &playerWalkD2);
                 renderCharacter(display, (int)player.x, (int)player.y, &playerWalkD2);
                 if (player.steps > 40) {
                     player.steps = 0;
                 }
             } else {
-                // hagl_blit(display, (int)player.x, (int)player.y, &playerWalkD1);
                 renderCharacter(display, (int)player.x, (int)player.y, &playerWalkD1);
             }
         }
