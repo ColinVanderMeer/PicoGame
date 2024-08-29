@@ -77,54 +77,6 @@ void initInput() {
     gpio_pull_up(15);
 }
 
-void handleInput() {
-    if (!textBoxActive) {
-        if (!gpio_get(5)) { // W
-            player.y -= 0.7;
-            player.direction = 0;
-        }
-        if (!gpio_get(6)) { // A
-            player.x -= 0.7;
-            player.direction = 1;
-        }
-        if (!gpio_get(7)) { // S
-            player.y += 0.7;
-            player.direction = 2;
-        }
-        if (!gpio_get(8)) { // D
-            player.x += 0.7;
-            player.direction = 3;
-        }
-    }
-    if (gpio_get(5) && gpio_get(6) && gpio_get(7) && gpio_get(8)) {
-        player.steps = 0;
-    } else {
-        player.steps++;
-    }
-    if (!gpio_get(12) && !gp12justPressed) { // I
-        textBoxActive = !textBoxActive;
-        gp12justPressed = true;
-        wcscpy(textLine1, L"Hello");
-        wcscpy(textLine2, L"World");
-        wcscpy(textLine3, L"!");
-        wcscpy(textLine4, L"abcdefghijklmnopqrstuvwxy");
-    }
-    if (gpio_get(12)) {
-        gp12justPressed = false;
-    }
-    if (!gpio_get(13)) { // J
-        wcscpy(textLine1, L"This");
-        wcscpy(textLine2, L"Is");
-        wcscpy(textLine3, L"TextBox");
-        wcscpy(textLine4, L"2");
-    }
-    if (!gpio_get(14)) { // K
-        
-    }
-    if (!gpio_get(15)) { // L
-        
-    }
-}
 
 static void update_mod_player(void)
 {
@@ -175,10 +127,104 @@ void renderInteractableObjects(hagl_backend_t *display) {
     }
 }
 
+void interactObject(hagl_backend_t *display) {
+    int playerBoxX1 = player.x;
+    int playerBoxX2 = player.x;
+    int playerBoxY1 = player.y;
+    int playerBoxY2 = player.y;
+    switch (player.direction) {
+        case 0:
+            playerBoxY1 -= 30;
+            playerBoxX1 -= 15;
+            playerBoxX2 += 15;
+            break;
+        case 1:
+            playerBoxX1 -= 30;
+            playerBoxY1 -= 15;
+            playerBoxY2 += 15;
+            break;
+        case 2:
+            playerBoxY2 += 30;
+            playerBoxX1 -= 15;
+            playerBoxX2 += 15;
+            break;
+        case 3:
+            playerBoxX2 += 30;
+            playerBoxY1 -= 15;
+            playerBoxY2 += 15;
+            break;
+    }
+    hagl_draw_rectangle_xyxy(display, playerBoxX1, playerBoxY1, playerBoxX2, playerBoxY2, 0xffff);
+    printf("Player Box: %d, %d, %d, %d\n", playerBoxX1, playerBoxY1, playerBoxX2, playerBoxY2);
+    for (int i = 0; i < numInteractableObjects; i++) {
+        printf("Object Box: %d, %d, %d, %d\n", interactableObjects[i]->x + interactableObjects[i]->sprite->width, interactableObjects[i]->y + interactableObjects[i]->sprite->height, interactableObjects[i]->x, interactableObjects[i]->y);
+        printf("Which statements are true: %d, %d, %d, %d\n", playerBoxX1 < interactableObjects[i]->x + interactableObjects[i]->sprite->width, playerBoxX2 > interactableObjects[i]->x, playerBoxY1 < interactableObjects[i]->y + interactableObjects[i]->sprite->height, playerBoxY2 > interactableObjects[i]->y);
+        if (
+            playerBoxX1 < interactableObjects[i]->x + interactableObjects[i]->sprite->width &&
+            playerBoxX2 > interactableObjects[i]->x &&
+            playerBoxY1 < interactableObjects[i]->y + interactableObjects[i]->sprite->height &&
+            playerBoxY2 > interactableObjects[i]->y
+        ) {
+            textBoxActive = true;
+            wcscpy(textLine1, interactableObjects[i]->message);
+        }
+    }
+}
+
+void handleInput(hagl_backend_t *display) {
+    if (!textBoxActive) {
+        if (!gpio_get(5)) { // W
+            player.y -= 0.7;
+            player.direction = 0;
+        }
+        if (!gpio_get(6)) { // A
+            player.x -= 0.7;
+            player.direction = 1;
+        }
+        if (!gpio_get(7)) { // S
+            player.y += 0.7;
+            player.direction = 2;
+        }
+        if (!gpio_get(8)) { // D
+            player.x += 0.7;
+            player.direction = 3;
+        }
+    }
+    if (gpio_get(5) && gpio_get(6) && gpio_get(7) && gpio_get(8)) {
+        player.steps = 0;
+    } else {
+        player.steps++;
+    }
+    if (!gpio_get(12) && !gp12justPressed) { // I
+        textBoxActive = !textBoxActive;
+        gp12justPressed = true;
+        wcscpy(textLine1, L"Hello");
+        wcscpy(textLine2, L"World");
+        wcscpy(textLine3, L"!");
+        wcscpy(textLine4, L"abcdefghijklmnopqrstuvwxy");
+    }
+    if (gpio_get(12)) {
+        gp12justPressed = false;
+    }
+    if (!gpio_get(13)) { // J
+        wcscpy(textLine1, L"This");
+        wcscpy(textLine2, L"Is");
+        wcscpy(textLine3, L"TextBox");
+        wcscpy(textLine4, L"2");
+    }
+    if (!gpio_get(14)) { // K
+        
+    }
+    if (!gpio_get(15)) { // L
+        interactObject(display);
+    }
+}
+
+
 void gameLoop(hagl_backend_t *display) {
     while (1) {
         hagl_clear(display);
-        handleInput();
+        handleInput(display);
 
         uint16_t w = 20;
         uint16_t h = 30;
