@@ -125,6 +125,9 @@ void renderMap(hagl_backend_t *display) {
                 case 'F':
                     hagl_blit(display, x*16, y*16, &floorTile);
                     break;
+                case 'G':
+                    hagl_blit(display, x*16, y*16, &grassTile);
+                    break;
             }
         }
     }

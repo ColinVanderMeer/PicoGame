@@ -18,12 +18,25 @@ struct interactableObject sign2 = {
     .message = L"I'm a evil sign... I'm going to over flow the text buffer and crash the game! Wait it's fixed?"
 };
 
+struct interactableObject sign3 = {
+    .x = 50,
+    .y = 16,
+    .sprite = &sign,
+    .message = L"I'm an outdoor sign! Those inside signs are so boring!"
+};
+
 struct interactableObject* houseObjects[] = {
     &sign1,
     &sign2,
 };
 
 const int numHouseObjects = sizeof(houseObjects) / sizeof(houseObjects[0]);
+
+struct interactableObject* outsideObjects[] = {
+    &sign3,
+};
+
+const int numOutsideObjects = sizeof(outsideObjects) / sizeof(outsideObjects[0]);
 
 struct map {
     char map[8][10];
@@ -46,14 +59,14 @@ struct map houseMap = {
 };
 
 struct map outsideMap = {
-    "WWWWWWWWWW",
-    "WFFFFFFFFW",
-    "WFFFFFFFFW",
-    "FFFFFFFFFW",
-    "FFFFFFFFFW",
-    "WFFFFFFFFW",
-    "WFFFFFFFFW",
-    "WWWWWWWWWW",
-    NULL,
-    0,
+    "WGGGGGGGGG",
+    "WGGGGGGGGG",
+    "WGGGGGGGGG",
+    "FGGGGGGGGG",
+    "FGGGGGGGGG",
+    "WGGGGGGGGG",
+    "WGGGGGGGGG",
+    "WGGGGGGGGG",
+    outsideObjects,
+    numOutsideObjects,
 };
