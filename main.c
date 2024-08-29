@@ -128,6 +128,9 @@ void renderMap(hagl_backend_t *display) {
                 case 'G':
                     hagl_blit(display, x*16, y*16, &grassTile);
                     break;
+                case 'E':
+                    hagl_blit(display, x*16, y*16, &fenceTile);
+                    break;
             }
         }
     }
@@ -255,19 +258,19 @@ void interactObject(hagl_backend_t *display) {
 void handleInput(hagl_backend_t *display) {
     if (!textBoxActive) {
         if (!gpio_get(5)) { // W
-            player.y -= 0.85;
+            player.y -= 0.9;
             player.direction = 0;
         }
         if (!gpio_get(6)) { // A
-            player.x -= 0.85;
+            player.x -= 0.9;
             player.direction = 1;
         }
         if (!gpio_get(7)) { // S
-            player.y += 0.85;
+            player.y += 0.9;
             player.direction = 2;
         }
         if (!gpio_get(8)) { // D
-            player.x += 0.85;
+            player.x += 0.9;
             player.direction = 3;
         }
     }

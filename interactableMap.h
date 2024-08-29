@@ -19,7 +19,7 @@ struct interactableObject sign2 = {
 };
 
 struct interactableObject sign3 = {
-    .x = 50,
+    .x = 70,
     .y = 16,
     .sprite = &sign,
     .message = L"I'm an outdoor sign! Those inside signs are so boring!"
@@ -59,14 +59,14 @@ struct map houseMap = {
 };
 
 struct map outsideMap = {
-    "WGGGGGGGGG",
-    "WGGGGGGGGG",
-    "WGGGGGGGGG",
-    "FGGGGGGGGG",
-    "FGGGGGGGGG",
-    "WGGGGGGGGG",
-    "WGGGGGGGGG",
-    "WGGGGGGGGG",
+    "WEEEEEEEEE",
+    "WGGGGGGGGE",
+    "WGGGGGGGGE",
+    "FGGGGGGGGE",
+    "FGGGGGGGGE",
+    "WGGGGGGGGE",
+    "WGGGGGGGGE",
+    "WEEEEEEEEE",
     outsideObjects,
     numOutsideObjects,
 };
