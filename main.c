@@ -34,6 +34,8 @@ wchar_t textLine2[26] = L"";
 wchar_t textLine3[26] = L"";
 wchar_t textLine4[26] = L"";
 
+struct map (*currentMap) = &houseMap;
+
 static const struct sound_i2s_config sound_config = {
   .pin_scl         = 10,
   .pin_sda         = 9,
@@ -116,7 +118,7 @@ void renderSprite(hagl_backend_t *display, int px, int py, hagl_bitmap_t *bitmap
 void renderMap(hagl_backend_t *display) {
     for (uint8_t x = 0; x < 10; x++) {
         for (uint8_t y = 0; y < 8; y++) {
-            switch (houseMap[y][x]) {
+            switch (currentMap->map[y][x]) {
                 case 'W':
                     hagl_blit(display, x*16, y*16, &wallTile);
                     break;
@@ -129,8 +131,8 @@ void renderMap(hagl_backend_t *display) {
 }
 
 void renderInteractableObjects(hagl_backend_t *display) {
-    for (int i = 0; i < numInteractableObjects; i++) {
-        renderSprite(display, interactableObjects[i]->x, interactableObjects[i]->y, interactableObjects[i]->sprite);
+    for (int i = 0; i < currentMap->numObjects; i++) {
+        renderSprite(display, currentMap->objects[i]->x, currentMap->objects[i]->y, currentMap->objects[i]->sprite);
     }
 }
 
@@ -163,82 +165,82 @@ void interactObject(hagl_backend_t *display) {
             playerBoxY2 += 35;
             break;
     }
-    for (int i = 0; i < numInteractableObjects; i++) {
+    for (int i = 0; i < currentMap->numObjects; i++) {
         if (
-            playerBoxX1 < interactableObjects[i]->x + interactableObjects[i]->sprite->width &&
-            playerBoxX2 > interactableObjects[i]->x &&
-            playerBoxY1 < interactableObjects[i]->y + interactableObjects[i]->sprite->height &&
-            playerBoxY2 > interactableObjects[i]->y
+            playerBoxX1 < currentMap->objects[i]->x + currentMap->objects[i]->sprite->width &&
+            playerBoxX2 > currentMap->objects[i]->x &&
+            playerBoxY1 < currentMap->objects[i]->y + currentMap->objects[i]->sprite->height &&
+            playerBoxY2 > currentMap->objects[i]->y
         ) {
             textBoxActive = true;
             // TODO: This code sucks, it is atrociously bad. If you are reading this code right now and know how to make it better, please submit a PR.
-            int messageLength = wcslen(interactableObjects[i]->message);
+            int messageLength = wcslen(currentMap->objects[i]->message);
             if (messageLength < 26) {
-                wcscpy(textLine1, interactableObjects[i]->message);
+                wcscpy(textLine1, currentMap->objects[i]->message);
                 wcscpy(textLine2, L"                         ");
                 wcscpy(textLine3, L"                         ");
                 wcscpy(textLine4, L"                         ");
             } else if (messageLength < 52) {
-                wcscpy(textLine1, wcsncpy(textLine1, interactableObjects[i]->message, 25));
-                if (interactableObjects[i]->message[25] == ' ') {
-                    wcscpy(textLine2, wcsncpy(textLine2, interactableObjects[i]->message + 26, 25));
+                wcscpy(textLine1, wcsncpy(textLine1, currentMap->objects[i]->message, 25));
+                if (currentMap->objects[i]->message[25] == ' ') {
+                    wcscpy(textLine2, wcsncpy(textLine2, currentMap->objects[i]->message + 26, 25));
                 } else {
-                    wcscpy(textLine2, wcsncpy(textLine2, interactableObjects[i]->message + 25, 25));
+                    wcscpy(textLine2, wcsncpy(textLine2, currentMap->objects[i]->message + 25, 25));
                 }
                 wcscpy(textLine3, L"                         ");
                 wcscpy(textLine4, L"                         ");
             } else if (messageLength < 78) {
-                wcscpy(textLine1, wcsncpy(textLine1, interactableObjects[i]->message, 25));
-                if (interactableObjects[i]->message[25] == ' ') {
-                    wcscpy(textLine2, wcsncpy(textLine2, interactableObjects[i]->message + 26, 25));
-                    if (interactableObjects[i]->message[51] == ' ') {
-                        wcscpy(textLine3, wcsncpy(textLine3, interactableObjects[i]->message + 52, 25));
+                wcscpy(textLine1, wcsncpy(textLine1, currentMap->objects[i]->message, 25));
+                if (currentMap->objects[i]->message[25] == ' ') {
+                    wcscpy(textLine2, wcsncpy(textLine2, currentMap->objects[i]->message + 26, 25));
+                    if (currentMap->objects[i]->message[51] == ' ') {
+                        wcscpy(textLine3, wcsncpy(textLine3, currentMap->objects[i]->message + 52, 25));
                     } else {
-                        wcscpy(textLine3, wcsncpy(textLine3, interactableObjects[i]->message + 51, 25));
+                        wcscpy(textLine3, wcsncpy(textLine3, currentMap->objects[i]->message + 51, 25));
                     }
                 } else {
-                    wcscpy(textLine2, wcsncpy(textLine2, interactableObjects[i]->message + 25, 25));
-                    if (interactableObjects[i]->message[50] == ' ') {
-                        wcscpy(textLine3, wcsncpy(textLine3, interactableObjects[i]->message + 51, 25));
+                    wcscpy(textLine2, wcsncpy(textLine2, currentMap->objects[i]->message + 25, 25));
+                    if (currentMap->objects[i]->message[50] == ' ') {
+                        wcscpy(textLine3, wcsncpy(textLine3, currentMap->objects[i]->message + 51, 25));
                     } else {
-                        wcscpy(textLine3, wcsncpy(textLine3, interactableObjects[i]->message + 50, 25));
+                        wcscpy(textLine3, wcsncpy(textLine3, currentMap->objects[i]->message + 50, 25));
                     }
                 }
                 wcscpy(textLine4, L"                         ");
             } else {
-                wcscpy(textLine1, wcsncpy(textLine1, interactableObjects[i]->message, 25));
-                if (interactableObjects[i]->message[25] == ' ') {
-                    wcscpy(textLine2, wcsncpy(textLine2, interactableObjects[i]->message + 26, 25));
-                    if (interactableObjects[i]->message[51] == ' ') {
-                        wcscpy(textLine3, wcsncpy(textLine3, interactableObjects[i]->message + 52, 25));
-                        if (interactableObjects[i]->message[77] == ' ') {
-                            wcscpy(textLine4, wcsncpy(textLine4, interactableObjects[i]->message + 78, 25));
+                wcscpy(textLine1, wcsncpy(textLine1, currentMap->objects[i]->message, 25));
+                if (currentMap->objects[i]->message[25] == ' ') {
+                    wcscpy(textLine2, wcsncpy(textLine2, currentMap->objects[i]->message + 26, 25));
+                    if (currentMap->objects[i]->message[51] == ' ') {
+                        wcscpy(textLine3, wcsncpy(textLine3, currentMap->objects[i]->message + 52, 25));
+                        if (currentMap->objects[i]->message[77] == ' ') {
+                            wcscpy(textLine4, wcsncpy(textLine4, currentMap->objects[i]->message + 78, 25));
                         } else {
-                            wcscpy(textLine4, wcsncpy(textLine4, interactableObjects[i]->message + 77, 25));
+                            wcscpy(textLine4, wcsncpy(textLine4, currentMap->objects[i]->message + 77, 25));
                         }
                     } else {
-                        wcscpy(textLine3, wcsncpy(textLine3, interactableObjects[i]->message + 51, 25));
-                        if (interactableObjects[i]->message[76] == ' ') {
-                            wcscpy(textLine4, wcsncpy(textLine4, interactableObjects[i]->message + 77, 25));
+                        wcscpy(textLine3, wcsncpy(textLine3, currentMap->objects[i]->message + 51, 25));
+                        if (currentMap->objects[i]->message[76] == ' ') {
+                            wcscpy(textLine4, wcsncpy(textLine4, currentMap->objects[i]->message + 77, 25));
                         } else {
-                            wcscpy(textLine4, wcsncpy(textLine4, interactableObjects[i]->message + 76, 25));
+                            wcscpy(textLine4, wcsncpy(textLine4, currentMap->objects[i]->message + 76, 25));
                         }
                     }
                 } else {
-                    wcscpy(textLine2, wcsncpy(textLine2, interactableObjects[i]->message + 25, 25));
-                    if (interactableObjects[i]->message[50] == ' ') {
-                        wcscpy(textLine3, wcsncpy(textLine3, interactableObjects[i]->message + 51, 25));
-                        if (interactableObjects[i]->message[76] == ' ') {
-                            wcscpy(textLine4, wcsncpy(textLine4, interactableObjects[i]->message + 77, 25));
+                    wcscpy(textLine2, wcsncpy(textLine2, currentMap->objects[i]->message + 25, 25));
+                    if (currentMap->objects[i]->message[50] == ' ') {
+                        wcscpy(textLine3, wcsncpy(textLine3, currentMap->objects[i]->message + 51, 25));
+                        if (currentMap->objects[i]->message[76] == ' ') {
+                            wcscpy(textLine4, wcsncpy(textLine4, currentMap->objects[i]->message + 77, 25));
                         } else {
-                            wcscpy(textLine4, wcsncpy(textLine4, interactableObjects[i]->message + 76, 25));
+                            wcscpy(textLine4, wcsncpy(textLine4, currentMap->objects[i]->message + 76, 25));
                         }
                     } else {
-                        wcscpy(textLine3, wcsncpy(textLine3, interactableObjects[i]->message + 50, 25));
-                        if (interactableObjects[i]->message[75] == ' ') {
-                            wcscpy(textLine4, wcsncpy(textLine4, interactableObjects[i]->message + 76, 25));
+                        wcscpy(textLine3, wcsncpy(textLine3, currentMap->objects[i]->message + 50, 25));
+                        if (currentMap->objects[i]->message[75] == ' ') {
+                            wcscpy(textLine4, wcsncpy(textLine4, currentMap->objects[i]->message + 76, 25));
                         } else {
-                            wcscpy(textLine4, wcsncpy(textLine4, interactableObjects[i]->message + 75, 25));
+                            wcscpy(textLine4, wcsncpy(textLine4, currentMap->objects[i]->message + 75, 25));
                         }
                     }
                 }
@@ -275,7 +277,7 @@ void handleInput(hagl_backend_t *display) {
 
     }
     if (!gpio_get(13)) { // J
-
+        printf("Player X: %f, Player Y: %f\n", player.x, player.y);
     }
     if (!gpio_get(14)) { // K
         textBoxActive = false;
@@ -349,6 +351,16 @@ void gameLoop(hagl_backend_t *display) {
                 renderSprite(display, (int)player.x, (int)player.y, &playerWalkD1);
             }
         }
+
+        if (player.x > 150 && player.y > 35 && player.y < 60 && currentMap == &houseMap) {
+            currentMap = &outsideMap;
+            player.x = 20;
+        }
+        if (player.x < 10 && player.y > 35 && player.y < 60 && currentMap == &outsideMap) {
+            currentMap = &houseMap;
+            player.x = 140;
+        }
+
         if (textBoxActive) {
             player.steps = 0;
             hagl_fill_rounded_rectangle_xyxy(display, 2, 82, 157, 125, 5, 0x0000);

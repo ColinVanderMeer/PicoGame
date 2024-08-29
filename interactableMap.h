@@ -1,16 +1,3 @@
-#include <hagl.h>
-
-char houseMap[8][10] = {
-    "WWWWWWWWWW",
-    "WFFFFFFFFW",
-    "WFFFFFFFFW",
-    "WFFFFFFFFF",
-    "WFFFFFFFFF",
-    "WFFFFFFFFW",
-    "WFFFFFFFFW",
-    "WWWWWWWWWW",
-};
-
 struct interactableObject {
     int x, y;
     hagl_bitmap_t* sprite;
@@ -31,9 +18,42 @@ struct interactableObject sign2 = {
     .message = L"I'm a evil sign... I'm going to over flow the text buffer and crash the game! Wait it's fixed?"
 };
 
-struct interactableObject* interactableObjects[] = {
+struct interactableObject* houseObjects[] = {
     &sign1,
     &sign2,
 };
 
-const int numInteractableObjects = sizeof(interactableObjects) / sizeof(interactableObjects[0]);
+const int numHouseObjects = sizeof(houseObjects) / sizeof(houseObjects[0]);
+
+struct map {
+    char map[8][10];
+    struct interactableObject** objects;
+    int numObjects;
+};
+
+
+struct map houseMap = {
+    "WWWWWWWWWW",
+    "WFFFFFFFFW",
+    "WFFFFFFFFW",
+    "WFFFFFFFFF",
+    "WFFFFFFFFF",
+    "WFFFFFFFFW",
+    "WFFFFFFFFW",
+    "WWWWWWWWWW",
+    houseObjects,
+    numHouseObjects,
+};
+
+struct map outsideMap = {
+    "WWWWWWWWWW",
+    "WFFFFFFFFW",
+    "WFFFFFFFFW",
+    "FFFFFFFFFW",
+    "FFFFFFFFFW",
+    "WFFFFFFFFW",
+    "WFFFFFFFFW",
+    "WWWWWWWWWW",
+    NULL,
+    0,
+};
