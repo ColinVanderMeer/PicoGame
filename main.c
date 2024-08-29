@@ -15,6 +15,7 @@
 #include "hymn_to_aurora.h"
 
 #include "graphics.h"
+#include "interactableMap.h"
 
 struct player {
     float x, y;
@@ -148,7 +149,7 @@ static void update_mod_player(void)
   }
 }
 
-void renderCharacter(hagl_backend_t *display, int px, int py, hagl_bitmap_t *bitmap) {
+void renderSprite(hagl_backend_t *display, int px, int py, hagl_bitmap_t *bitmap) {
     hagl_color_t transparentColor = hagl_color(display, 0, 255, 0);
     for (uint8_t x = 0; x < 20; x++) {
         for (uint8_t y = 0; y < 30; y++) {
@@ -168,6 +169,12 @@ void renderMap(hagl_backend_t *display) {
     }
 }
 
+void renderInteractableObjects(hagl_backend_t *display) {
+    for (int i = 0; i < numInteractableObjects; i++) {
+        renderSprite(display, interactableObjects[i]->x, interactableObjects[i]->y, interactableObjects[i]->sprite);
+    }
+}
+
 void gameLoop(hagl_backend_t *display) {
     while (1) {
         hagl_clear(display);
@@ -177,51 +184,52 @@ void gameLoop(hagl_backend_t *display) {
         uint16_t h = 30;
         hagl_color_t color = 0xffff;
         renderMap(display);
+        renderInteractableObjects(display);
         if (player.direction == 0) {
             if (player.steps > 60) {
-                renderCharacter(display, (int)player.x, (int)player.y, &playerWalkW3);
+                renderSprite(display, (int)player.x, (int)player.y, &playerWalkW3);
                 if (player.steps > 80) {
                     player.steps = 0;
                 }
             } else if (player.steps > 20 && player.steps < 40) {
-                renderCharacter(display, (int)player.x, (int)player.y, &playerWalkW2);
+                renderSprite(display, (int)player.x, (int)player.y, &playerWalkW2);
                 if (player.steps > 40) {
                     player.steps = 0;
                 }
             } else {
-                renderCharacter(display, (int)player.x, (int)player.y, &playerWalkW1);
+                renderSprite(display, (int)player.x, (int)player.y, &playerWalkW1);
             }
         } else if (player.direction == 1) {
             if (player.steps > 20) {
-                renderCharacter(display, (int)player.x, (int)player.y, &playerWalkA2);
+                renderSprite(display, (int)player.x, (int)player.y, &playerWalkA2);
                 if (player.steps > 40) {
                     player.steps = 0;
                 }
             } else {
-                renderCharacter(display, (int)player.x, (int)player.y, &playerWalkA1);
+                renderSprite(display, (int)player.x, (int)player.y, &playerWalkA1);
             }
         } else if (player.direction == 2) {
             if (player.steps > 60) {
-                renderCharacter(display, (int)player.x, (int)player.y, &playerWalkS3);
+                renderSprite(display, (int)player.x, (int)player.y, &playerWalkS3);
                 if (player.steps > 80) {
                     player.steps = 0;
                 }
             } else if (player.steps > 20 && player.steps < 40) {
-                renderCharacter(display, (int)player.x, (int)player.y, &playerWalkS2);
+                renderSprite(display, (int)player.x, (int)player.y, &playerWalkS2);
                 if (player.steps > 40) {
                     player.steps = 0;
                 }
             } else {
-                renderCharacter(display, (int)player.x, (int)player.y, &playerWalkS1);
+                renderSprite(display, (int)player.x, (int)player.y, &playerWalkS1);
             }
         } else if (player.direction == 3) {
             if (player.steps > 20) {
-                renderCharacter(display, (int)player.x, (int)player.y, &playerWalkD2);
+                renderSprite(display, (int)player.x, (int)player.y, &playerWalkD2);
                 if (player.steps > 40) {
                     player.steps = 0;
                 }
             } else {
-                renderCharacter(display, (int)player.x, (int)player.y, &playerWalkD1);
+                renderSprite(display, (int)player.x, (int)player.y, &playerWalkD1);
             }
         }
         if (textBoxActive) {
