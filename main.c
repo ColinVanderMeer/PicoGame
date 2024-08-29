@@ -23,7 +23,7 @@ struct player {
     int steps;
 };
 
-struct player player = {0, 0, 2, 0};
+struct player player = {30, 30, 2, 0};
 
 bool textBoxActive = false;
 
@@ -116,7 +116,14 @@ void renderSprite(hagl_backend_t *display, int px, int py, hagl_bitmap_t *bitmap
 void renderMap(hagl_backend_t *display) {
     for (uint8_t x = 0; x < 10; x++) {
         for (uint8_t y = 0; y < 8; y++) {
-            hagl_blit(display, x*16, y*16, &floorTile);
+            switch (houseMap[y][x]) {
+                case 'W':
+                    hagl_blit(display, x*16, y*16, &wallTile);
+                    break;
+                case 'F':
+                    hagl_blit(display, x*16, y*16, &floorTile);
+                    break;
+            }
         }
     }
 }
