@@ -17,7 +17,7 @@ struct interactableObject sign2 = {
     .x = 50,
     .y = 100,
     .sprite = &sign,
-    .message = L"I'm a evil sign... I'm so evil that I'm going to over flow the text buffer and crash the game!"
+    .message = L"I'm a evil sign... I'm going to over flow the text buffer and crash the game! Wait it's fixed?"
 };
 
 struct interactableObject* interactableObjects[] = {

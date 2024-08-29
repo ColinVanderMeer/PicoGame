@@ -135,30 +135,28 @@ void interactObject(hagl_backend_t *display) {
     switch (player.direction) {
         case 0:
             playerBoxY1 -= 30;
-            playerBoxX1 -= 15;
-            playerBoxX2 += 15;
+            playerBoxX1 -= 5;
+            playerBoxX2 += 25;
             break;
         case 1:
             playerBoxX1 -= 30;
-            playerBoxY1 -= 15;
-            playerBoxY2 += 15;
+            playerBoxY1 += 5;
+            playerBoxY2 += 35;
             break;
         case 2:
-            playerBoxY2 += 30;
-            playerBoxX1 -= 15;
-            playerBoxX2 += 15;
+            playerBoxY1 += 30;
+            playerBoxY2 += 60;
+            playerBoxX2 += 25;
+            playerBoxX1 -= 5;
             break;
         case 3:
-            playerBoxX2 += 30;
-            playerBoxY1 -= 15;
-            playerBoxY2 += 15;
+            playerBoxX1 += 20;
+            playerBoxX2 += 50;
+            playerBoxY1 += 5;
+            playerBoxY2 += 35;
             break;
     }
-    hagl_draw_rectangle_xyxy(display, playerBoxX1, playerBoxY1, playerBoxX2, playerBoxY2, 0xffff);
-    printf("Player Box: %d, %d, %d, %d\n", playerBoxX1, playerBoxY1, playerBoxX2, playerBoxY2);
     for (int i = 0; i < numInteractableObjects; i++) {
-        printf("Object Box: %d, %d, %d, %d\n", interactableObjects[i]->x + interactableObjects[i]->sprite->width, interactableObjects[i]->y + interactableObjects[i]->sprite->height, interactableObjects[i]->x, interactableObjects[i]->y);
-        printf("Which statements are true: %d, %d, %d, %d\n", playerBoxX1 < interactableObjects[i]->x + interactableObjects[i]->sprite->width, playerBoxX2 > interactableObjects[i]->x, playerBoxY1 < interactableObjects[i]->y + interactableObjects[i]->sprite->height, playerBoxY2 > interactableObjects[i]->y);
         if (
             playerBoxX1 < interactableObjects[i]->x + interactableObjects[i]->sprite->width &&
             playerBoxX2 > interactableObjects[i]->x &&
@@ -166,7 +164,7 @@ void interactObject(hagl_backend_t *display) {
             playerBoxY2 > interactableObjects[i]->y
         ) {
             textBoxActive = true;
-            // TODO: This is pretty bad
+            // TODO: This code sucks, it is atrociously bad. If you are reading this code right now and know how to make it better, please submit a PR.
             int messageLength = wcslen(interactableObjects[i]->message);
             if (messageLength < 26) {
                 wcscpy(textLine1, interactableObjects[i]->message);
@@ -175,19 +173,68 @@ void interactObject(hagl_backend_t *display) {
                 wcscpy(textLine4, L"                         ");
             } else if (messageLength < 52) {
                 wcscpy(textLine1, wcsncpy(textLine1, interactableObjects[i]->message, 25));
-                wcscpy(textLine2, wcsncpy(textLine2, interactableObjects[i]->message + 25, 25));
+                if (interactableObjects[i]->message[25] == ' ') {
+                    wcscpy(textLine2, wcsncpy(textLine2, interactableObjects[i]->message + 26, 25));
+                } else {
+                    wcscpy(textLine2, wcsncpy(textLine2, interactableObjects[i]->message + 25, 25));
+                }
                 wcscpy(textLine3, L"                         ");
                 wcscpy(textLine4, L"                         ");
             } else if (messageLength < 78) {
                 wcscpy(textLine1, wcsncpy(textLine1, interactableObjects[i]->message, 25));
-                wcscpy(textLine2, wcsncpy(textLine2, interactableObjects[i]->message + 25, 25));
-                wcscpy(textLine3, wcsncpy(textLine3, interactableObjects[i]->message + 50, 25));
+                if (interactableObjects[i]->message[25] == ' ') {
+                    wcscpy(textLine2, wcsncpy(textLine2, interactableObjects[i]->message + 26, 25));
+                    if (interactableObjects[i]->message[51] == ' ') {
+                        wcscpy(textLine3, wcsncpy(textLine3, interactableObjects[i]->message + 52, 25));
+                    } else {
+                        wcscpy(textLine3, wcsncpy(textLine3, interactableObjects[i]->message + 51, 25));
+                    }
+                } else {
+                    wcscpy(textLine2, wcsncpy(textLine2, interactableObjects[i]->message + 25, 25));
+                    if (interactableObjects[i]->message[50] == ' ') {
+                        wcscpy(textLine3, wcsncpy(textLine3, interactableObjects[i]->message + 51, 25));
+                    } else {
+                        wcscpy(textLine3, wcsncpy(textLine3, interactableObjects[i]->message + 50, 25));
+                    }
+                }
                 wcscpy(textLine4, L"                         ");
             } else {
                 wcscpy(textLine1, wcsncpy(textLine1, interactableObjects[i]->message, 25));
-                wcscpy(textLine2, wcsncpy(textLine2, interactableObjects[i]->message + 25, 25));
-                wcscpy(textLine3, wcsncpy(textLine3, interactableObjects[i]->message + 50, 25));
-                wcscpy(textLine4, wcsncpy(textLine4, interactableObjects[i]->message + 75, 25));
+                if (interactableObjects[i]->message[25] == ' ') {
+                    wcscpy(textLine2, wcsncpy(textLine2, interactableObjects[i]->message + 26, 25));
+                    if (interactableObjects[i]->message[51] == ' ') {
+                        wcscpy(textLine3, wcsncpy(textLine3, interactableObjects[i]->message + 52, 25));
+                        if (interactableObjects[i]->message[77] == ' ') {
+                            wcscpy(textLine4, wcsncpy(textLine4, interactableObjects[i]->message + 78, 25));
+                        } else {
+                            wcscpy(textLine4, wcsncpy(textLine4, interactableObjects[i]->message + 77, 25));
+                        }
+                    } else {
+                        wcscpy(textLine3, wcsncpy(textLine3, interactableObjects[i]->message + 51, 25));
+                        if (interactableObjects[i]->message[76] == ' ') {
+                            wcscpy(textLine4, wcsncpy(textLine4, interactableObjects[i]->message + 77, 25));
+                        } else {
+                            wcscpy(textLine4, wcsncpy(textLine4, interactableObjects[i]->message + 76, 25));
+                        }
+                    }
+                } else {
+                    wcscpy(textLine2, wcsncpy(textLine2, interactableObjects[i]->message + 25, 25));
+                    if (interactableObjects[i]->message[50] == ' ') {
+                        wcscpy(textLine3, wcsncpy(textLine3, interactableObjects[i]->message + 51, 25));
+                        if (interactableObjects[i]->message[76] == ' ') {
+                            wcscpy(textLine4, wcsncpy(textLine4, interactableObjects[i]->message + 77, 25));
+                        } else {
+                            wcscpy(textLine4, wcsncpy(textLine4, interactableObjects[i]->message + 76, 25));
+                        }
+                    } else {
+                        wcscpy(textLine3, wcsncpy(textLine3, interactableObjects[i]->message + 50, 25));
+                        if (interactableObjects[i]->message[75] == ' ') {
+                            wcscpy(textLine4, wcsncpy(textLine4, interactableObjects[i]->message + 76, 25));
+                        } else {
+                            wcscpy(textLine4, wcsncpy(textLine4, interactableObjects[i]->message + 75, 25));
+                        }
+                    }
+                }
             }
         }
     }
@@ -196,19 +243,19 @@ void interactObject(hagl_backend_t *display) {
 void handleInput(hagl_backend_t *display) {
     if (!textBoxActive) {
         if (!gpio_get(5)) { // W
-            player.y -= 0.7;
+            player.y -= 0.85;
             player.direction = 0;
         }
         if (!gpio_get(6)) { // A
-            player.x -= 0.7;
+            player.x -= 0.85;
             player.direction = 1;
         }
         if (!gpio_get(7)) { // S
-            player.y += 0.7;
+            player.y += 0.85;
             player.direction = 2;
         }
         if (!gpio_get(8)) { // D
-            player.x += 0.7;
+            player.x += 0.85;
             player.direction = 3;
         }
     }
@@ -239,12 +286,14 @@ void handleInput(hagl_backend_t *display) {
 void gameLoop(hagl_backend_t *display) {
     while (1) {
         hagl_clear(display);
-        handleInput(display);
+        renderMap(display);
 
         uint16_t w = 20;
         uint16_t h = 30;
         hagl_color_t color = 0xffff;
-        renderMap(display);
+
+        handleInput(display);
+
         renderInteractableObjects(display);
         if (player.direction == 0) {
             if (player.steps > 60) {
