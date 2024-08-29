@@ -27,7 +27,7 @@ struct player player = {0, 0, 2, 0};
 
 bool textBoxActive = false;
 
-bool gp12justPressed = false;
+bool gp15justPressed = false;
 
 wchar_t textLine1[26] = L"";
 wchar_t textLine2[26] = L"";
@@ -166,7 +166,29 @@ void interactObject(hagl_backend_t *display) {
             playerBoxY2 > interactableObjects[i]->y
         ) {
             textBoxActive = true;
-            wcscpy(textLine1, interactableObjects[i]->message);
+            // TODO: This is pretty bad
+            int messageLength = wcslen(interactableObjects[i]->message);
+            if (messageLength < 26) {
+                wcscpy(textLine1, interactableObjects[i]->message);
+                wcscpy(textLine2, L"                         ");
+                wcscpy(textLine3, L"                         ");
+                wcscpy(textLine4, L"                         ");
+            } else if (messageLength < 52) {
+                wcscpy(textLine1, wcsncpy(textLine1, interactableObjects[i]->message, 25));
+                wcscpy(textLine2, wcsncpy(textLine2, interactableObjects[i]->message + 25, 25));
+                wcscpy(textLine3, L"                         ");
+                wcscpy(textLine4, L"                         ");
+            } else if (messageLength < 78) {
+                wcscpy(textLine1, wcsncpy(textLine1, interactableObjects[i]->message, 25));
+                wcscpy(textLine2, wcsncpy(textLine2, interactableObjects[i]->message + 25, 25));
+                wcscpy(textLine3, wcsncpy(textLine3, interactableObjects[i]->message + 50, 25));
+                wcscpy(textLine4, L"                         ");
+            } else {
+                wcscpy(textLine1, wcsncpy(textLine1, interactableObjects[i]->message, 25));
+                wcscpy(textLine2, wcsncpy(textLine2, interactableObjects[i]->message + 25, 25));
+                wcscpy(textLine3, wcsncpy(textLine3, interactableObjects[i]->message + 50, 25));
+                wcscpy(textLine4, wcsncpy(textLine4, interactableObjects[i]->message + 75, 25));
+            }
         }
     }
 }
@@ -195,28 +217,21 @@ void handleInput(hagl_backend_t *display) {
     } else {
         player.steps++;
     }
-    if (!gpio_get(12) && !gp12justPressed) { // I
-        textBoxActive = !textBoxActive;
-        gp12justPressed = true;
-        wcscpy(textLine1, L"Hello");
-        wcscpy(textLine2, L"World");
-        wcscpy(textLine3, L"!");
-        wcscpy(textLine4, L"abcdefghijklmnopqrstuvwxy");
-    }
-    if (gpio_get(12)) {
-        gp12justPressed = false;
+    if (!gpio_get(12)) { // I
+
     }
     if (!gpio_get(13)) { // J
-        wcscpy(textLine1, L"This");
-        wcscpy(textLine2, L"Is");
-        wcscpy(textLine3, L"TextBox");
-        wcscpy(textLine4, L"2");
+
     }
     if (!gpio_get(14)) { // K
-        
+        textBoxActive = false;
     }
-    if (!gpio_get(15)) { // L
+    if (!gpio_get(15) && gp15justPressed) { // L
         interactObject(display);
+        gp15justPressed = false;
+    }
+    if (gpio_get(15)) {
+        gp15justPressed = true;
     }
 }
 
