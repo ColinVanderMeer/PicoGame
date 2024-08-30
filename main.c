@@ -131,6 +131,12 @@ void renderMap(hagl_backend_t *display) {
                 case 'E':
                     hagl_blit(display, x*16, y*16, &fenceTile);
                     break;
+                case 'R':
+                    hagl_blit(display, x*16, y*16, &roadTile);
+                    break;
+                case 'C':
+                    hagl_blit(display, x*16, y*16, &roadCenterTile);
+                    break;
             }
         }
     }
@@ -180,7 +186,6 @@ void interactObject(hagl_backend_t *display) {
         ) {
             textBoxActive = true;
             // TODO: This code sucks, it is atrociously bad. If you are reading this code right now and know how to make it better, please submit a PR.
-            printf("messageNum: %d\n", currentMap->objects[i]->messageNumber);
             int messageLength = wcslen(currentMap->objects[i]->messages[currentMap->objects[i]->messageNumber]);
             if (messageLength < 26) {
                 wcscpy(textLine1, currentMap->objects[i]->messages[currentMap->objects[i]->messageNumber]);
@@ -367,12 +372,21 @@ void gameLoop(hagl_backend_t *display) {
 
         if (player.x > 150 && player.y > 35 && player.y < 60 && currentMap == &houseMap) {
             currentMap = &outsideMap;
-            player.x = 20;
+            player.x = 10;
         }
         if (player.x < 10 && player.y > 35 && player.y < 60 && currentMap == &outsideMap) {
             currentMap = &houseMap;
             player.x = 140;
         }
+        if (player.x > 55 && player.x < 85 && player.y > 110 && currentMap == &outsideMap) {
+            currentMap = &roadMap;
+            player.y = 0;
+        }
+        if (player.x > 55 && player.x < 85 && player.y < -10 && currentMap == &roadMap) {
+            currentMap = &outsideMap;
+            player.y = 100;
+        }
+
 
         if (textBoxActive) {
             player.steps = 0;

@@ -99,7 +99,20 @@ struct map outsideMap = {
     "FGGGGGGGGE",
     "WGGGGGGGGE",
     "WGGGGGGGGE",
-    "WEEEEEEEEE",
+    "WEEEGGEEEE",
     outsideObjects,
     numOutsideObjects,
+};
+
+struct map roadMap = {
+    "EEEEGGEEEE",
+    "GGGGGGGGGG",
+    "GGGGGGGGGG",
+    "RRRRRRRRRR",
+    "CCCCCCCCCC",
+    "RRRRRRRRRR",
+    "GGGGGGGGGG",
+    "GGGGGGGGGG",
+    NULL,
+    0,
 };
