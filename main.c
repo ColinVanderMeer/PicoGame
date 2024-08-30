@@ -180,76 +180,83 @@ void interactObject(hagl_backend_t *display) {
         ) {
             textBoxActive = true;
             // TODO: This code sucks, it is atrociously bad. If you are reading this code right now and know how to make it better, please submit a PR.
-            int messageLength = wcslen(currentMap->objects[i]->message);
+            printf("messageNum: %d\n", currentMap->objects[i]->messageNumber);
+            int messageLength = wcslen(currentMap->objects[i]->messages[currentMap->objects[i]->messageNumber]);
             if (messageLength < 26) {
-                wcscpy(textLine1, currentMap->objects[i]->message);
+                wcscpy(textLine1, currentMap->objects[i]->messages[currentMap->objects[i]->messageNumber]);
                 wcscpy(textLine2, L"                         ");
                 wcscpy(textLine3, L"                         ");
                 wcscpy(textLine4, L"                         ");
             } else if (messageLength < 52) {
-                wcscpy(textLine1, wcsncpy(textLine1, currentMap->objects[i]->message, 25));
-                if (currentMap->objects[i]->message[25] == ' ') {
-                    wcscpy(textLine2, wcsncpy(textLine2, currentMap->objects[i]->message + 26, 25));
+                wcscpy(textLine1, wcsncpy(textLine1, currentMap->objects[i]->messages[currentMap->objects[i]->messageNumber], 25));
+                if (currentMap->objects[i]->messages[currentMap->objects[i]->messageNumber][25] == ' ') {
+                    wcscpy(textLine2, wcsncpy(textLine2, currentMap->objects[i]->messages[currentMap->objects[i]->messageNumber] + 26, 25));
                 } else {
-                    wcscpy(textLine2, wcsncpy(textLine2, currentMap->objects[i]->message + 25, 25));
+                    wcscpy(textLine2, wcsncpy(textLine2, currentMap->objects[i]->messages[currentMap->objects[i]->messageNumber] + 25, 25));
                 }
                 wcscpy(textLine3, L"                         ");
                 wcscpy(textLine4, L"                         ");
             } else if (messageLength < 78) {
-                wcscpy(textLine1, wcsncpy(textLine1, currentMap->objects[i]->message, 25));
-                if (currentMap->objects[i]->message[25] == ' ') {
-                    wcscpy(textLine2, wcsncpy(textLine2, currentMap->objects[i]->message + 26, 25));
-                    if (currentMap->objects[i]->message[51] == ' ') {
-                        wcscpy(textLine3, wcsncpy(textLine3, currentMap->objects[i]->message + 52, 25));
+                wcscpy(textLine1, wcsncpy(textLine1, currentMap->objects[i]->messages[currentMap->objects[i]->messageNumber], 25));
+                if (currentMap->objects[i]->messages[currentMap->objects[i]->messageNumber][25] == ' ') {
+                    wcscpy(textLine2, wcsncpy(textLine2, currentMap->objects[i]->messages[currentMap->objects[i]->messageNumber] + 26, 25));
+                    if (currentMap->objects[i]->messages[currentMap->objects[i]->messageNumber][51] == ' ') {
+                        wcscpy(textLine3, wcsncpy(textLine3, currentMap->objects[i]->messages[currentMap->objects[i]->messageNumber] + 52, 25));
                     } else {
-                        wcscpy(textLine3, wcsncpy(textLine3, currentMap->objects[i]->message + 51, 25));
+                        wcscpy(textLine3, wcsncpy(textLine3, currentMap->objects[i]->messages[currentMap->objects[i]->messageNumber] + 51, 25));
                     }
                 } else {
-                    wcscpy(textLine2, wcsncpy(textLine2, currentMap->objects[i]->message + 25, 25));
-                    if (currentMap->objects[i]->message[50] == ' ') {
-                        wcscpy(textLine3, wcsncpy(textLine3, currentMap->objects[i]->message + 51, 25));
+                    wcscpy(textLine2, wcsncpy(textLine2, currentMap->objects[i]->messages[currentMap->objects[i]->messageNumber] + 25, 25));
+                    if (currentMap->objects[i]->messages[currentMap->objects[i]->messageNumber][50] == ' ') {
+                        wcscpy(textLine3, wcsncpy(textLine3, currentMap->objects[i]->messages[currentMap->objects[i]->messageNumber] + 51, 25));
                     } else {
-                        wcscpy(textLine3, wcsncpy(textLine3, currentMap->objects[i]->message + 50, 25));
+                        wcscpy(textLine3, wcsncpy(textLine3, currentMap->objects[i]->messages[currentMap->objects[i]->messageNumber] + 50, 25));
                     }
                 }
                 wcscpy(textLine4, L"                         ");
             } else {
-                wcscpy(textLine1, wcsncpy(textLine1, currentMap->objects[i]->message, 25));
-                if (currentMap->objects[i]->message[25] == ' ') {
-                    wcscpy(textLine2, wcsncpy(textLine2, currentMap->objects[i]->message + 26, 25));
-                    if (currentMap->objects[i]->message[51] == ' ') {
-                        wcscpy(textLine3, wcsncpy(textLine3, currentMap->objects[i]->message + 52, 25));
-                        if (currentMap->objects[i]->message[77] == ' ') {
-                            wcscpy(textLine4, wcsncpy(textLine4, currentMap->objects[i]->message + 78, 25));
+                wcscpy(textLine1, wcsncpy(textLine1, currentMap->objects[i]->messages[currentMap->objects[i]->messageNumber], 25));
+                if (currentMap->objects[i]->messages[currentMap->objects[i]->messageNumber][25] == ' ') {
+                    wcscpy(textLine2, wcsncpy(textLine2, currentMap->objects[i]->messages[currentMap->objects[i]->messageNumber] + 26, 25));
+                    if (currentMap->objects[i]->messages[currentMap->objects[i]->messageNumber][51] == ' ') {
+                        wcscpy(textLine3, wcsncpy(textLine3, currentMap->objects[i]->messages[currentMap->objects[i]->messageNumber] + 52, 25));
+                        if (currentMap->objects[i]->messages[currentMap->objects[i]->messageNumber][77] == ' ') {
+                            wcscpy(textLine4, wcsncpy(textLine4, currentMap->objects[i]->messages[currentMap->objects[i]->messageNumber] + 78, 25));
                         } else {
-                            wcscpy(textLine4, wcsncpy(textLine4, currentMap->objects[i]->message + 77, 25));
+                            wcscpy(textLine4, wcsncpy(textLine4, currentMap->objects[i]->messages[currentMap->objects[i]->messageNumber] + 77, 25));
                         }
                     } else {
-                        wcscpy(textLine3, wcsncpy(textLine3, currentMap->objects[i]->message + 51, 25));
-                        if (currentMap->objects[i]->message[76] == ' ') {
-                            wcscpy(textLine4, wcsncpy(textLine4, currentMap->objects[i]->message + 77, 25));
+                        wcscpy(textLine3, wcsncpy(textLine3, currentMap->objects[i]->messages[currentMap->objects[i]->messageNumber] + 51, 25));
+                        if (currentMap->objects[i]->messages[currentMap->objects[i]->messageNumber][76] == ' ') {
+                            wcscpy(textLine4, wcsncpy(textLine4, currentMap->objects[i]->messages[currentMap->objects[i]->messageNumber] + 77, 25));
                         } else {
-                            wcscpy(textLine4, wcsncpy(textLine4, currentMap->objects[i]->message + 76, 25));
+                            wcscpy(textLine4, wcsncpy(textLine4, currentMap->objects[i]->messages[currentMap->objects[i]->messageNumber] + 76, 25));
                         }
                     }
                 } else {
-                    wcscpy(textLine2, wcsncpy(textLine2, currentMap->objects[i]->message + 25, 25));
-                    if (currentMap->objects[i]->message[50] == ' ') {
-                        wcscpy(textLine3, wcsncpy(textLine3, currentMap->objects[i]->message + 51, 25));
-                        if (currentMap->objects[i]->message[76] == ' ') {
-                            wcscpy(textLine4, wcsncpy(textLine4, currentMap->objects[i]->message + 77, 25));
+                    wcscpy(textLine2, wcsncpy(textLine2, currentMap->objects[i]->messages[currentMap->objects[i]->messageNumber] + 25, 25));
+                    if (currentMap->objects[i]->messages[currentMap->objects[i]->messageNumber][50] == ' ') {
+                        wcscpy(textLine3, wcsncpy(textLine3, currentMap->objects[i]->messages[currentMap->objects[i]->messageNumber] + 51, 25));
+                        if (currentMap->objects[i]->messages[currentMap->objects[i]->messageNumber][76] == ' ') {
+                            wcscpy(textLine4, wcsncpy(textLine4, currentMap->objects[i]->messages[currentMap->objects[i]->messageNumber] + 77, 25));
                         } else {
-                            wcscpy(textLine4, wcsncpy(textLine4, currentMap->objects[i]->message + 76, 25));
+                            wcscpy(textLine4, wcsncpy(textLine4, currentMap->objects[i]->messages[currentMap->objects[i]->messageNumber] + 76, 25));
                         }
                     } else {
-                        wcscpy(textLine3, wcsncpy(textLine3, currentMap->objects[i]->message + 50, 25));
-                        if (currentMap->objects[i]->message[75] == ' ') {
-                            wcscpy(textLine4, wcsncpy(textLine4, currentMap->objects[i]->message + 76, 25));
+                        wcscpy(textLine3, wcsncpy(textLine3, currentMap->objects[i]->messages[currentMap->objects[i]->messageNumber] + 50, 25));
+                        if (currentMap->objects[i]->messages[currentMap->objects[i]->messageNumber][75] == ' ') {
+                            wcscpy(textLine4, wcsncpy(textLine4, currentMap->objects[i]->messages[currentMap->objects[i]->messageNumber] + 76, 25));
                         } else {
-                            wcscpy(textLine4, wcsncpy(textLine4, currentMap->objects[i]->message + 75, 25));
+                            wcscpy(textLine4, wcsncpy(textLine4, currentMap->objects[i]->messages[currentMap->objects[i]->messageNumber] + 75, 25));
                         }
                     }
                 }
+            }
+
+            if (currentMap->objects[i]->messageNumber < currentMap->objects[i]->numMessages - 1) {
+                currentMap->objects[i]->messageNumber++;
+            } else {
+                continue;
             }
         }
     }

@@ -1,28 +1,44 @@
 struct interactableObject {
     int x, y;
     hagl_bitmap_t* sprite;
-    wchar_t message[];
+    int messageNumber;
+    int numMessages;
+    wchar_t* messages[];
 };
 
 struct interactableObject sign1 = {
     .x = 100,
     .y = 16,
     .sprite = &sign,
-    .message = L"Hello, world!"
+    .numMessages = 4,
+    .messages = {
+        L"Hello world!",
+        L"Goodbye world!",
+        L"The world exists!",
+        L"stop talking to me",
+    }
 };
 
 struct interactableObject sign2 = {
     .x = 50,
     .y = 16,
     .sprite = &sign,
-    .message = L"I'm a evil sign... I'm going to over flow the text buffer and crash the game! Wait it's fixed?"
+    .numMessages = 1,
+    .messages = {
+        L"I'm a evil sign... I'm going to over flow the text buffer and crash the game!",
+        L"Wait what do you mean it's been patched?",
+    }
 };
 
 struct interactableObject sign3 = {
     .x = 70,
     .y = 16,
     .sprite = &sign,
-    .message = L"I'm an outdoor sign! Those inside signs are so boring!"
+    .numMessages = 2,
+    .messages = {
+        L"I'm an outdoor sign! Those inside signs are so boring!",
+        L"(This is definitely the more boring sign)",
+    }
 };
 
 struct interactableObject* houseObjects[] = {
