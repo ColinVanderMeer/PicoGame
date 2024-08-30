@@ -431,9 +431,10 @@ void gameLoop(hagl_backend_t *display) {
         uint16_t h = 30;
         hagl_color_t color = 0xffff;
 
-        handleInput(display);
-
         renderInteractableObjects(display);
+
+        handleInput(display);
+        
         if (player.direction == 0) {
             if (player.steps > 60) {
                 renderSprite(display, (int)player.x, (int)player.y, &playerWalkW3);
