@@ -267,6 +267,58 @@ void interactObject(hagl_backend_t *display) {
     }
 }
 
+void menu(hagl_backend_t *display) {
+    int selection = 0;
+    int butPressed = 0;
+    hagl_fill_rounded_rectangle_xyxy(display, 2, 2, 80, 125, 5, 0x0000);
+    hagl_draw_rounded_rectangle_xyxy(display, 2, 2, 80, 125, 5, 0xffff);
+    hagl_put_text(display, L"Menu", 5, 5, 0xffff, font6x9);
+    hagl_put_text(display, L"Save", 15, 15, 0xffff, font6x9);
+    hagl_put_text(display, L"Load", 15, 25, 0xffff, font6x9);
+    hagl_put_text(display, L"Exit", 15, 35, 0xffff, font6x9);
+
+    while (1) {
+        hagl_fill_rectangle_xyxy(display, 7, 15, 10, 120, 0x0000);
+        hagl_blit_xy(display, 7, 17 + selection * 10, &selector);
+
+        hagl_flush(display);
+
+        if (!gpio_get(5) && !butPressed) {
+            selection--;
+            if (selection < 0) {
+                selection = 2;
+            }
+        }
+        if (!gpio_get(7) && !butPressed) {
+            selection++;
+            if (selection > 2) {
+                selection = 0;
+            }
+        }
+
+        if (!gpio_get(5) || !gpio_get(7)) {
+            butPressed = 1;
+        } else {
+            butPressed = 0;
+        }
+
+
+        if (!gpio_get(15)) {
+            switch (selection) {
+                case 0:
+                    continue;
+                case 1:
+                    continue;
+                case 2:
+                    return;
+            }
+        }
+        if (!gpio_get(14)) {
+            return;
+        }
+    }
+}
+
 void handleInput(hagl_backend_t *display) {
     if (!textBoxActive) {
         if (!gpio_get(5)) { // W
@@ -292,7 +344,7 @@ void handleInput(hagl_backend_t *display) {
         player.steps++;
     }
     if (!gpio_get(12)) { // I
-
+        menu(display);
     }
     if (!gpio_get(13)) { // J
         printf("Player X: %f, Player Y: %f\n", player.x, player.y);
