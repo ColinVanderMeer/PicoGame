@@ -57,6 +57,21 @@ struct interactableObject morayObj = {
     }
 };
 
+struct interactableObject lucasObj = {
+    .x = 12,
+    .y = 21,
+    .sprite = &lucas,
+    .numMessages = 6,
+    .messages = {
+        L"{I still haven't played Mother 3}",
+        L"{I'll get around to it eventually okay}",
+        L"{I've just been busy implementing a save system}",
+        L"{It actually works pretty well}",
+        L"{I'm pretty proud of it}",
+        L"{It's in your menu (press I to open it)}",
+    }
+};
+
 struct interactableObject* houseObjects[] = {
     &sign1,
     &sign2,
@@ -70,6 +85,12 @@ struct interactableObject* outsideObjects[] = {
 };
 
 const int numOutsideObjects = sizeof(outsideObjects) / sizeof(outsideObjects[0]);
+
+struct interactableObject* roadObjects[] = {
+    &lucasObj,
+};
+
+const int numRoadObjects = sizeof(roadObjects) / sizeof(roadObjects[0]);
 
 struct map {
     char map[8][10];
@@ -113,6 +134,6 @@ struct map roadMap = {
     "RRRRRRRRRR",
     "GGGGGGGGGG",
     "GGGGGGGGGG",
-    NULL,
-    0,
+    roadObjects,
+    numRoadObjects,
 };
