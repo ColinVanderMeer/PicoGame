@@ -105,8 +105,8 @@ static void update_mod_player(void)
 
 void renderSprite(hagl_backend_t *display, int px, int py, hagl_bitmap_t *bitmap) {
     hagl_color_t transparentColor = hagl_color(display, 0, 255, 0);
-    for (uint8_t x = 0; x < 20; x++) {
-        for (uint8_t y = 0; y < 30; y++) {
+    for (uint8_t x = 0; x < bitmap->width; x++) {
+        for (uint8_t y = 0; y < bitmap->height; y++) {
             hagl_color_t *color = (hagl_color_t *) (bitmap->buffer + (x + y * bitmap->width) * 2);
             if (*color != transparentColor) {
                 hagl_put_pixel(display, px + x, py + y, *color);
