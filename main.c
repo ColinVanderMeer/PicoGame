@@ -12,10 +12,18 @@
 #include <mod_play.h>
 #include <sound_i2s.h>
 
+#include "flash_utils.h"
+
+#include "hardware/flash.h" // for the flash erasing and writing
+#include "hardware/sync.h" // for the interrupts
+#include <string.h>
+
 #include "hymn_to_aurora.h"
 
 #include "graphics.h"
 #include "interactableMap.h"
+
+#define FLASH_TARGET_OFFSET (512 * 1024)
 
 struct player {
     float x, y;
@@ -306,9 +314,34 @@ void menu(hagl_backend_t *display) {
         if (!gpio_get(15)) {
             switch (selection) {
                 case 0:
-                    continue;
+                    printf("Starting save\n");
+                    uint8_t* playerSaveDataBytes = (uint8_t*) &player;
+                    uint8_t* mapSaveDataBytes = (uint8_t*) currentMap;
+                    uint8_t* saveDataBytes = (uint8_t*) malloc(sizeof(player) + sizeof(currentMap));
+                    int saveDataSize = sizeof(saveDataBytes);
+                    printf("Save size: %d\n", saveDataSize);
+
+                    int writeSize = (saveDataSize / FLASH_PAGE_SIZE) + 1;
+                    int sectorCount = ((writeSize * FLASH_PAGE_SIZE) / FLASH_SECTOR_SIZE) + 1; 
+                    int WRITE_ADRESS = (int) getAddressPersistent();
+                    printf("Save address: %d\n", WRITE_ADRESS);
+                    printf("Save size: %d", FLASH_TARGET_OFFSET);
+
+                    uint32_t interrupts = save_and_disable_interrupts();
+                    flash_range_erase(WRITE_ADRESS, sectorCount * FLASH_SECTOR_SIZE);
+                    flash_range_program(WRITE_ADRESS, saveDataBytes, FLASH_PAGE_SIZE * writeSize);
+                    restore_interrupts(interrupts);
+                    printf("Saved\n");
+
+                    free(saveDataBytes);
+                    printf("Saved2\n");
+                    return;
                 case 1:
-                    continue;
+                    const uint8_t* flash_target_contents = (const uint8_t *) (XIP_BASE + WRITE_ADRESS);
+                    memcpy(&player, flash_target_contents, sizeof(player));
+                    memcpy(currentMap, flash_target_contents + sizeof(player), sizeof(currentMap));
+                    printf("Loaded\n");
+                    return;
                 case 2:
                     return;
             }
@@ -348,6 +381,8 @@ void handleInput(hagl_backend_t *display) {
     }
     if (!gpio_get(13)) { // J
         printf("Player X: %f, Player Y: %f\n", player.x, player.y);
+        printf("Save size: %d, %d\n", sizeof(player), sizeof(currentMap));
+        printf("Save address: %x\n", getAddressPersistent());
     }
     if (!gpio_get(14)) { // K
         textBoxActive = false;

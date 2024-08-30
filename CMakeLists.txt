@@ -58,6 +58,7 @@ target_include_directories(PicoGame PRIVATE
 # Add any user requested libraries
 target_link_libraries(PicoGame 
         hardware_spi
+        hardware_flash
         hagl
         hagl_hal
         mod_player
@@ -100,3 +101,5 @@ MIPI_DISPLAY_OFFSET_X=0
 MIPI_DISPLAY_OFFSET_Y=0
 
 )
+
+pico_set_linker_script(PicoGame ${CMAKE_SOURCE_DIR}/memmap_custom.ld)
